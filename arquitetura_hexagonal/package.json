@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "terminal-kit": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/terminal-kit": "^2.5.2"
+  },
+  "scripts": {
+    "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --ignore-watch node_modules src/index.ts",
+    "build": "tsc",
+    "test": "jest"
+}
+}
