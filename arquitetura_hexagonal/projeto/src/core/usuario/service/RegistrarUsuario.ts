@@ -1,24 +1,22 @@
 import CasoDeUso from "@/core/shared/CasoDeUso";
 import Usuario from "../model/Usuario";
-import RepositorioUsuarioEmMemoria from "./RepositorioUsuarioEmMemoria";
 import Erros from "@/core/shared/Erros";
 import Id from "@/core/shared/Id";
 import ProvedorCriptografia from "./ProvedorCriptografia";
+import RepositorioUsuario from "./RepositorioUsuario";
 
 export default class RegistrarUsuario
     implements CasoDeUso<Usuario, void>
 {
     constructor(
+        private repositorio: RepositorioUsuario,
         private provedorCripto: ProvedorCriptografia
     ) {}
 
     async executar(usuario: Usuario): Promise<void> {
-        const repo = new RepositorioUsuarioEmMemoria();
+        const senhaCripto = this.provedorCripto.criptografar(usuario.senha);
 
-        const senhaCripto =
-            this.provedorCripto.criptografar(usuario.senha);
-
-        const usuarioExistente = await repo.buscarPorEmail(
+        const usuarioExistente = await this.repositorio.buscarPorEmail(
             usuario.email
         );
         if (usuarioExistente)
@@ -31,7 +29,7 @@ export default class RegistrarUsuario
             senha: senhaCripto,
         };
 
-        repo.inserir(usuario);
+        this.repositorio.inserir(usuario);
         console.log(`\n\n${senhaCripto}`);
     }
 }
